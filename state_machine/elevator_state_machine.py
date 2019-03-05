@@ -95,3 +95,4 @@ def move_elevator(process, event, event_name, floor):
     transition(e1, e1.wait, WAITING)
     transition(e1, e1.close_door, CLOSINGDOOR)
     transition(e1, e1.wait, WAITING)
+    
