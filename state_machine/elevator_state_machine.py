@@ -88,11 +88,11 @@ def transition(process, event, event_name):
         print('Error: transition of {} from {} to {} failed'.format(process.name, process.current_state, event_name))
         
 def move_elevator(process, event, event_name, floor):
-    e1.set_target_floor(floor)
+    process.set_target_floor(floor)
     transition(process, event, event_name)
-    transition(e1, e1.wait, WAITING)
-    transition(e1, e1.open_door, OPENINGDOOR)
-    transition(e1, e1.wait, WAITING)
-    transition(e1, e1.close_door, CLOSINGDOOR)
-    transition(e1, e1.wait, WAITING)
+    transition(process, process.wait, WAITING)
+    transition(process, process.open_door, OPENINGDOOR)
+    transition(process, process.wait, WAITING)
+    transition(process, process.close_door, CLOSINGDOOR)
+    transition(process, process.wait, WAITING)
     
