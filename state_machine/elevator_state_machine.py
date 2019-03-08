@@ -97,9 +97,7 @@ def transition(process, event, event_name):
     except  InvalidStateTransition as err: 
         print('Error: transition of {} from {} to {} failed'.format(process.name, process.current_state, event_name))
         
-        
 def move_elevator(process, floor):
-    
     if floor > process.get_current_floor():
         event_name = MOVINGUP
         event = process.move_up
@@ -109,10 +107,8 @@ def move_elevator(process, floor):
     else: # Move to same floor
         transition(process, process.wait, WAITING)
         return
-    
     _move_elevator(process, event, event_name, floor)
     
-
 def _move_elevator(process, event, event_name, floor):
     process.set_target_floor(floor)
     transition(process, event, event_name)
@@ -122,6 +118,5 @@ def _move_elevator(process, event, event_name, floor):
     transition(process, process.close_door, CLOSINGDOOR)
     transition(process, process.wait, WAITING)
     
-
 def terminate_elevator(process):
     transition(process, process.terminate, TERMINATED)
