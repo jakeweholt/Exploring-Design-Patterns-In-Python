@@ -2,52 +2,53 @@ from state_machine import (State, Event, acts_as_state_machine,
                            after, before, InvalidStateTransition)
 import time
 
-MOVINGUP = 'moving up' 
-MOVINGDOWN = 'moving down' 
-OPENINGDOOR = 'opening door' 
-CLOSINGDOOR = 'closing door' 
-WAITING = 'waiting' 
-BLOCKED = 'blocked' 
-TERMINATED = 'terminated' 
-  
-@acts_as_state_machine 
-class Elevator:  
-    waiting = State(initial=True) 
+MOVINGUP = 'moving up'
+MOVINGDOWN = 'moving down'
+OPENINGDOOR = 'opening door'
+CLOSINGDOOR = 'closing door'
+WAITING = 'waiting'
+BLOCKED = 'blocked'
+TERMINATED = 'terminated'
+
+@acts_as_state_machine
+class Elevator:
+    waiting = State(initial=True)
     moving_up = State()
     moving_down = State()
     opening_door = State()
     closing_door = State()
-    blocked = State() 
-    terminated = State() 
-    
-    wait = Event(from_states=(waiting, moving_up, moving_down, blocked, opening_door, closing_door), 
+    blocked = State()
+    terminated = State()
+
+    wait = Event(from_states=(waiting, moving_up, moving_down, blocked,
+                              opening_door, closing_door),
                  to_state=waiting)
-    
+
     move_up = Event(from_states=waiting,
                     to_state=moving_up)
-    
+
     move_down = Event(from_states=waiting,
                       to_state=moving_down)
-    
+
     open_door = Event(from_states=waiting,
                       to_state=opening_door)
-    
+
     close_door = Event(from_states=waiting,
-                      to_state=closing_door)
-    
+                       to_state=closing_door)
+
     block = Event(from_states=(move_up, move_down),
-                      to_state=blocked)
-    
+                  to_state=blocked)
+
     terminate = Event(from_states=waiting,
                       to_state=terminated)
-    
-    @after('wait') 
+
+    @after('wait')
     def wait_info(self): 
         print '{} entered waiting mode at floor {}'.format(self.name, self.current_floor)
- 
-    @after('move_up') 
+
+    @after('move_up')
     def run_info(self): 
-        print '{} is moving up from floor {} to floor {}'.format(self.name, self.current_floor, self.target_floor) 
+        print '{} is moving up from floor {} to floor {}'.format(self.name, self.current_floor, self.target_floor)
         time.sleep(3)
         self.current_floor = self.target_floor
         
@@ -89,14 +90,14 @@ class Elevator:
         
     def get_current_floor(self):
         return(self.current_floor)
-        
-        
-def transition(process, event, event_name): 
-    try: 
-        event() 
-    except  InvalidStateTransition as err: 
+
+
+def transition(process, event, event_name):
+    try:
+        event()
+    except InvalidStateTransition as err:
         print('Error: transition of {} from {} to {} failed'.format(process.name, process.current_state, event_name))
-        
+
 def move_elevator(process, floor):
     if floor > process.get_current_floor():
         event_name = MOVINGUP
@@ -108,7 +109,7 @@ def move_elevator(process, floor):
         transition(process, process.wait, WAITING)
         return
     _move_elevator(process, event, event_name, floor)
-    
+
 def _move_elevator(process, event, event_name, floor):
     process.set_target_floor(floor)
     transition(process, event, event_name)
